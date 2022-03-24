@@ -9,8 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.FormLoginRequestBuilder;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,7 +34,16 @@ class BalanceControllerTest {
                 .andDo(print());
     }
 
-    @WithMockUser
+    /*
+    * fails while providing custom config e.g. Configuration Java file
+    * */
+    @Test
+    void getBalanceDetailsWithAnonymousOK() throws Exception {
+        mockMvc.perform(get("/myBalance").with(anonymous()))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
+    }
+
     @Test
     void getBalanceDetailsWithMockUserOK() throws Exception {
         mockMvc.perform(get("/myBalance").with(user("MockUser")))
