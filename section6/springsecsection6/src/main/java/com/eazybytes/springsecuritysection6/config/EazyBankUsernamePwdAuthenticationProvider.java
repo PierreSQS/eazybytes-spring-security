@@ -2,7 +2,6 @@ package com.eazybytes.springsecuritysection6.config;
 
 import com.eazybytes.springsecuritysection6.model.Customer;
 import com.eazybytes.springsecuritysection6.repository.CustomerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,11 +18,14 @@ import java.util.Optional;
 @Component
 public class EazyBankUsernamePwdAuthenticationProvider implements AuthenticationProvider {
 
-	@Autowired
-	private CustomerRepository customerRepository;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final CustomerRepository customerRepository;
+
+	private final PasswordEncoder passwordEncoder;
+
+	public EazyBankUsernamePwdAuthenticationProvider(CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
+		this.customerRepository = customerRepository;
+		this.passwordEncoder = passwordEncoder;
+	}
 
 	@Override
 	public Authentication authenticate(Authentication authentication) {
