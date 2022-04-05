@@ -1,22 +1,23 @@
 package com.eazybytes.springsecuritysection6.controller;
 
-import java.sql.Date;
-import java.util.Random;
-
 import com.eazybytes.springsecuritysection6.model.Contact;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.eazybytes.springsecuritysection6.repository.ContactRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eazybytes.springsecuritysection6.repository.ContactRepository;
+import java.sql.Date;
+import java.util.Random;
 
 @RestController
 public class ContactController {
 
-	@Autowired
-	private ContactRepository contactRepository;
-	
+	private final ContactRepository contactRepository;
+
+	public ContactController(ContactRepository contactRepository) {
+		this.contactRepository = contactRepository;
+	}
+
 	@PostMapping("/contact")
 	public Contact saveContactInquiryDetails(@RequestBody Contact contact) {
 		contact.setContactId(getServiceReqNumber());

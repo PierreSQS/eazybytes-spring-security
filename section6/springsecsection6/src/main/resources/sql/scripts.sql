@@ -1,6 +1,7 @@
-create database eazybank;
+drop database if exists eazybytesspringsecuritydb;
+create database eazybytesspringsecuritydb;
 
-use eazybank;
+use eazybytesspringsecuritydb;
 
 CREATE TABLE `users` (
 `id` INT NOT NULL AUTO_INCREMENT,
