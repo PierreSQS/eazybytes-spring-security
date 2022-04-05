@@ -30,7 +30,7 @@ public class EazyBankUsernamePwdAuthenticationProvider implements Authentication
 		String username = authentication.getName();
 		String pwd = authentication.getCredentials().toString();
 		Optional<Customer> customerOpt = customerRepository.findByEmail(username);
-		if (!customerOpt.isEmpty()) {
+		if (customerOpt.isPresent()) {
 			if (passwordEncoder.matches(pwd, customerOpt.get().getPwd())) {
 				List<GrantedAuthority> authorities = new ArrayList<>();
 				authorities.add(new SimpleGrantedAuthority(customerOpt.get().getRole()));
