@@ -22,18 +22,26 @@ public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.cors().configurationSource(request -> {
-			CorsConfiguration config = new CorsConfiguration();
-			config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-			config.setAllowedMethods(Collections.singletonList("*"));
-			config.setAllowCredentials(true);
-			config.setAllowedHeaders(Collections.singletonList("*"));
-			config.setMaxAge(3600L);
-			return config;
-		}).and().csrf().ignoringAntMatchers("/contact").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and().
-		authorizeRequests().antMatchers("/myAccount").authenticated().antMatchers("/myBalance").authenticated()
-				.antMatchers("/myLoans").authenticated().antMatchers("/myCards").authenticated()
-				.antMatchers("/user").authenticated().antMatchers("/notices").permitAll()
-				.antMatchers("/contact").permitAll().and().httpBasic();
+					CorsConfiguration config = new CorsConfiguration();
+					config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+					config.setAllowedMethods(Collections.singletonList("*"));
+					config.setAllowCredentials(true);
+					config.setAllowedHeaders(Collections.singletonList("*"));
+					config.setMaxAge(3600L);
+					return config;
+				})
+				.and()
+				.csrf().ignoringAntMatchers("/contact").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				.and()
+				.authorizeRequests().antMatchers("/myAccount").authenticated()
+				.antMatchers("/myBalance").authenticated()
+				.antMatchers("/myLoans").authenticated()
+				.antMatchers("/myCards").authenticated()
+				.antMatchers("/user").authenticated()
+				.antMatchers("/notices").permitAll()
+				.antMatchers("/contact").permitAll()
+				.and()
+				.httpBasic();
 	}
 	
 	@Bean
