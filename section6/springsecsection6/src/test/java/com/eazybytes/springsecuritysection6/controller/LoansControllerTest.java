@@ -15,10 +15,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -60,10 +63,13 @@ class LoansControllerTest {
 
     @Test
     void getLoanDetails() throws Exception {
-        mockMvc.perform(post("/myLoans").with(httpBasic("happy@examle.com", "12345"))
+        mockMvc.perform(post("/myLoans")
+                        .with(csrf())
+                        .with(httpBasic("happy@example.com", "12345"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerMock)))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[1].loanNumber",equalTo(2222)))
                 .andDo(print());
     }
 }
