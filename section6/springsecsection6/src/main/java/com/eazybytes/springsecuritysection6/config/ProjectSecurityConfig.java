@@ -31,17 +31,17 @@ public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
 					return config;
 				})
 				.and()
-				.csrf().ignoringAntMatchers("/contact").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+					.csrf().ignoringAntMatchers("/contact").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 				.and()
-				.authorizeRequests().antMatchers("/myAccount").authenticated()
-				.antMatchers("/myBalance").authenticated()
-				.antMatchers("/myLoans").authenticated()
-				.antMatchers("/myCards").authenticated()
-				.antMatchers("/user").authenticated()
-				.antMatchers("/notices").permitAll()
-				.antMatchers("/contact").permitAll()
+					.authorizeRequests().antMatchers("/myAccount").authenticated()
+					.antMatchers("/myBalance").authenticated()
+					.antMatchers("/myLoans").authenticated()
+					.antMatchers("/myCards").authenticated()
+					.antMatchers("/user").authenticated()
+					.antMatchers("/notices").permitAll()
+					.antMatchers("/contact").permitAll()
 				.and()
-				.httpBasic();
+					.httpBasic();
 	}
 	
 	@Bean
