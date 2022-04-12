@@ -18,7 +18,7 @@ public class NoticesController {
 
 	@GetMapping("/notices")
 	public List<Notice> getNotices() {
-		return noticeRepository.findAll();
+		return noticeRepository.findAllActiveNotices();
 	}
 
 }
