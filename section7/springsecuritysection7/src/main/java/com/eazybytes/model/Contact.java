@@ -1,11 +1,10 @@
 package com.eazybytes.model;
 
-import java.sql.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "contact_messages")
@@ -26,7 +25,7 @@ public class Contact {
 	private String message;
 
 	@Column(name = "create_dt")
-	private Date createDt;
+	private LocalDate createDt;
 
 	public String getContactId() {
 		return contactId;
@@ -68,11 +67,11 @@ public class Contact {
 		this.message = message;
 	}
 
-	public Date getCreateDt() {
+	public LocalDate getCreateDt() {
 		return createDt;
 	}
 
-	public void setCreateDt(Date createDt) {
+	public void setCreateDt(LocalDate createDt) {
 		this.createDt = createDt;
 	}
 	
