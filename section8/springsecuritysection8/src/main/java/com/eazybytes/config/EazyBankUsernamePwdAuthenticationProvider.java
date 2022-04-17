@@ -1,10 +1,8 @@
 package com.eazybytes.config;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.eazybytes.model.Authority;
+import com.eazybytes.model.Customer;
+import com.eazybytes.repository.CustomerRepository;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,27 +12,32 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.eazybytes.model.Authority;
-import com.eazybytes.model.Customer;
-import com.eazybytes.repository.CustomerRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class EazyBankUsernamePwdAuthenticationProvider implements AuthenticationProvider {
 
-	@Autowired
-	private CustomerRepository customerRepository;
+	private final CustomerRepository customerRepository;
 	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
+
+	public EazyBankUsernamePwdAuthenticationProvider(CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
+		this.customerRepository = customerRepository;
+		this.passwordEncoder = passwordEncoder;
+	}
 
 	@Override
 	public Authentication authenticate(Authentication authentication) {
 		String username = authentication.getName();
 		String pwd = authentication.getCredentials().toString();
-		List<Customer> customer = customerRepository.findByEmail(username);
-		if (customer.size() > 0) {
-			if (passwordEncoder.matches(pwd, customer.get(0).getPwd())) {
-				return new UsernamePasswordAuthenticationToken(username, pwd, getGrantedAuthorities(customer.get(0).getAuthorities()));
+		Optional<Customer> customer = customerRepository.findByEmail(username);
+		if (customer.isPresent()) {
+			if (passwordEncoder.matches(pwd, customer.get().getPwd())) {
+				return new UsernamePasswordAuthenticationToken(username, pwd,
+						                                        getGrantedAuthorities(customer.get().getAuthorities()));
 			} else {
 				throw new BadCredentialsException("Invalid password!");
 			}
@@ -44,11 +47,9 @@ public class EazyBankUsernamePwdAuthenticationProvider implements Authentication
 	}
 	
 	private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities) {
-		List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        for (Authority authority : authorities) {
-        	grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
-        }
-        return grantedAuthorities;
+		return authorities.stream()
+				.map(authority -> new SimpleGrantedAuthority(authority.getName()))
+				.collect(Collectors.toList());
     }
 
 	@Override

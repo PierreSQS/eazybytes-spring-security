@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
 public class RequestValidationBeforeFilter implements Filter {
 
 	public static final String AUTHENTICATION_SCHEME_BASIC = "Basic";
-	private Charset credentialsCharset = StandardCharsets.UTF_8;
+	private static final Charset CREDENTIALSCHARSET = StandardCharsets.UTF_8;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -36,7 +36,7 @@ public class RequestValidationBeforeFilter implements Filter {
 				byte[] decoded;
 				try {
 					decoded = Base64.getDecoder().decode(base64Token);
-					String token = new String(decoded, getCredentialsCharset(req));
+					String token = new String(decoded, CREDENTIALSCHARSET);
 					int delim = token.indexOf(":");
 					if (delim == -1) {
 						throw new BadCredentialsException("Invalid basic authentication token");
@@ -52,14 +52,6 @@ public class RequestValidationBeforeFilter implements Filter {
 			}
 		}
 		chain.doFilter(request, response);
-	}
-
-	protected Charset getCredentialsCharset(HttpServletRequest request) {
-		return getCredentialsCharset();
-	}
-
-	public Charset getCredentialsCharset() {
-		return this.credentialsCharset;
 	}
 
 }

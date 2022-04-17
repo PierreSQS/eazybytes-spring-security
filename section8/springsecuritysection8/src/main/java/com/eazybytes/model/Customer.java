@@ -1,5 +1,6 @@
 package com.eazybytes.model;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -27,7 +28,7 @@ public class Customer {
 	private String pwd;
 	private String role;
 	@Column(name = "create_dt")
-	private String createDt;
+	private LocalDate createDt;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy="customer",fetch=FetchType.EAGER)
@@ -81,11 +82,11 @@ public class Customer {
 		this.role = role;
 	}
 
-	public String getCreateDt() {
+	public LocalDate getCreateDt() {
 		return createDt;
 	}
 
-	public void setCreateDt(String createDt) {
+	public void setCreateDt(LocalDate createDt) {
 		this.createDt = createDt;
 	}
 

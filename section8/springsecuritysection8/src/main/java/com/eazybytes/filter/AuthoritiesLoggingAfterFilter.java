@@ -14,17 +14,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AuthoritiesLoggingAfterFilter implements Filter {
 
-	private final Logger LOG =
+	private final Logger log =
 			Logger.getLogger(AuthoritiesLoggingAfterFilter.class.getName());
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if(null!=authentication) {
-			LOG.info("User "+authentication.getName()+" is successfully authenticated and "
-					+ "has the authorities "+authentication.getAuthorities().toString());
-		}
+		if(null!=authentication)
+			log.info("User " + authentication.getName() + " is successfully authenticated and "
+				+ "has the authorities " + authentication.getAuthorities().toString());
 		
 		chain.doFilter(request, response);
 	}

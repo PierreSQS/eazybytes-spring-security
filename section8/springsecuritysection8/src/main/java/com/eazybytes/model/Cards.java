@@ -1,13 +1,7 @@
 package com.eazybytes.model;
 
-import java.sql.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "cards")
@@ -37,7 +31,7 @@ public class Cards {
 	private int availableAmount;
 
 	@Column(name = "create_dt")
-	private Date createDt;
+	private LocalDate createDt;
 
 	public int getCardId() {
 		return cardId;
@@ -95,11 +89,11 @@ public class Cards {
 		this.availableAmount = availableAmount;
 	}
 
-	public Date getCreateDt() {
+	public LocalDate getCreateDt() {
 		return createDt;
 	}
 
-	public void setCreateDt(Date createDt) {
+	public void setCreateDt(LocalDate createDt) {
 		this.createDt = createDt;
 	}
 	
