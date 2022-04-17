@@ -1,9 +1,8 @@
 package com.eazybytes.config;
 
-import java.util.Collections;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.eazybytes.filter.AuthoritiesLoggingAfterFilter;
+import com.eazybytes.filter.AuthoritiesLoggingAtFilter;
+import com.eazybytes.filter.RequestValidationBeforeFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,11 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
-import com.eazybytes.filter.AuthoritiesLoggingAfterFilter;
-import com.eazybytes.filter.AuthoritiesLoggingAtFilter;
-import com.eazybytes.filter.RequestValidationBeforeFilter;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -31,9 +27,7 @@ public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.cors().configurationSource(new CorsConfigurationSource() {
-			@Override
-			public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+		http.cors().configurationSource(request ->  {
 				CorsConfiguration config = new CorsConfiguration();
 				config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
 				config.setAllowedMethods(Collections.singletonList("*"));
@@ -41,8 +35,8 @@ public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
 				config.setAllowedHeaders(Collections.singletonList("*"));
 				config.setMaxAge(3600L);
 				return config;
-			}
-		}).and().csrf().ignoringAntMatchers("/contact").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+			})
+				.and().csrf().ignoringAntMatchers("/contact").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 				.and().addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
 				.addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
 				.addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
@@ -55,30 +49,6 @@ public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/notices").permitAll()
 				.antMatchers("/contact").permitAll().and().httpBasic();
 	}
-	
-	/*
-	 * @Override protected void configure(AuthenticationManagerBuilder auth) throws
-	 * Exception {
-	 * auth.inMemoryAuthentication().withUser("admin").password("12345").authorities
-	 * ("admin").and(). withUser("user").password("12345").authorities("read").and()
-	 * .passwordEncoder(NoOpPasswordEncoder.getInstance()); }
-	 */
-
-	/*
-	 * @Override protected void configure(AuthenticationManagerBuilder auth) throws
-	 * Exception { InMemoryUserDetailsManager userDetailsService = new
-	 * InMemoryUserDetailsManager(); UserDetails user =
-	 * User.withUsername("admin").password("12345").authorities("admin").build();
-	 * UserDetails user1 =
-	 * User.withUsername("user").password("12345").authorities("read").build();
-	 * userDetailsService.createUser(user); userDetailsService.createUser(user1);
-	 * auth.userDetailsService(userDetailsService); }
-	 */
-
-	/*
-	 * @Bean public UserDetailsService userDetailsService(DataSource dataSource) {
-	 * return new JdbcUserDetailsManager(dataSource); }
-	 */
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
