@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +21,7 @@ import com.eazybytes.filter.AuthoritiesLoggingAtFilter;
 import com.eazybytes.filter.RequestValidationBeforeFilter;
 
 @Configuration
+@EnableWebSecurity(debug = true)
 public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	/**
