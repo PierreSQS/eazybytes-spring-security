@@ -17,7 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import java.util.Collections;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+//@EnableWebSecurity(debug = true)
 public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	/**
@@ -36,18 +36,22 @@ public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
 				config.setMaxAge(3600L);
 				return config;
 			})
-				.and().csrf().ignoringAntMatchers("/contact").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-				.and().addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
-				.addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
-				.addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
+				.and()
+					.csrf().ignoringAntMatchers("/contact").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				.and().
+					addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+					.addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+					.addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
 				.authorizeRequests()
-				.antMatchers("/myAccount").hasRole("USER")
-				.antMatchers("/myBalance").hasAnyRole("USER","ADMIN")
-				.antMatchers("/myLoans").hasRole("ROOT")
-				.antMatchers("/myCards").hasAnyRole("USER","ADMIN")
-				.antMatchers("/user").authenticated()
-				.antMatchers("/notices").permitAll()
-				.antMatchers("/contact").permitAll().and().httpBasic();
+					.antMatchers("/myAccount").hasRole("USER")
+					.antMatchers("/myBalance").hasAnyRole("USER","ADMIN")
+					.antMatchers("/myLoans").hasRole("ROOT")
+					.antMatchers("/myCards").hasAnyRole("USER","ADMIN")
+					.antMatchers("/user").authenticated()
+					.antMatchers("/notices").permitAll()
+					.antMatchers("/contact").permitAll()
+				.and()
+					.httpBasic();
 	}
 
 	@Bean
