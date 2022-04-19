@@ -103,6 +103,7 @@ class CardsControllerTest {
                     .content(objectMapper.writeValueAsString(customerMock)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[1].cardNumber").value(equalTo("46464646464")))
+                .andExpect(jsonPath("$.length()").value(equalTo(2)))
                 .andDo(print());
     }
 }

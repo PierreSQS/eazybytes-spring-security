@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -38,17 +39,30 @@ class CardsControllerIT {
     }
 
     @Test
-    void getCardDetails() throws Exception {
+    void getCardDetailsWithGoodUser() throws Exception {
 
         String username = "happy@example.com";
         String password = "12345";
 
         mockMvc.perform(post("/myCards").with(csrf()).with(httpBasic(username,password))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(customerMock)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customerMock)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[1].cardNumber").value(equalTo("3455XXXX8673")))
                 .andExpect(jsonPath("$.length()").value(3))
+                .andDo(print());
+    }
+
+    @Test
+    void getCardDetailsWithWrongUser() throws Exception {
+
+        String username = "pierrot@example.com";
+        String password = "12345";
+
+        mockMvc.perform(post("/myCards").with(csrf()).with(httpBasic(username,password))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customerMock)))
+                .andExpect(unauthenticated())
                 .andDo(print());
     }
 }
