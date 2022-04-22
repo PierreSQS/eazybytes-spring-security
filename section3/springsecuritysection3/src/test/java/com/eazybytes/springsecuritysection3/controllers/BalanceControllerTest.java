@@ -34,11 +34,8 @@ class BalanceControllerTest {
                 .andDo(print());
     }
 
-    /*
-    * fails while providing custom config e.g. Configuration Java file
-    * */
     @Test
-    void getBalanceDetailsWithAnonymousOK() throws Exception {
+    void getBalanceDetailsWithAnonymousNOK() throws Exception {
         mockMvc.perform(get("/myBalance").with(anonymous()))
                 .andExpect(status().isUnauthorized())
                 .andDo(print());
@@ -63,7 +60,7 @@ class BalanceControllerTest {
 
     @WithMockUser
     @Test
-    void getBalanceDetailsWithMockUserSimple() throws Exception {
+    void getBalanceDetailsWithMockUserDefaultOK() throws Exception {
         mockMvc.perform(get("/myBalance"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Here are the balance details from the DB"))
