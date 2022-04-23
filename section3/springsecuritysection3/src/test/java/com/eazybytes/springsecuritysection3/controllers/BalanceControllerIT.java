@@ -1,10 +1,10 @@
 package com.eazybytes.springsecuritysection3.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -17,20 +17,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Disabled("CANNOT BE RUN ONLY WITH THE WEB LAYER!!!! THIS IS A TYPICAL INTEGRATION TEST")
-@WebMvcTest(controllers = {BalanceController.class})
-class BalanceControllerTest {
+@SpringBootTest
+@AutoConfigureMockMvc
+class BalanceControllerIT {
 
     @Autowired
     MockMvc mockMvc;
 
+    private String usernameFromDB;
+    private String pwdFromDB;
+
     @BeforeEach
     void setUp() {
+        usernameFromDB = "happy";
+        pwdFromDB = "12345";
     }
 
     @Test
     void getBalanceDetailsWithBasicAuthenticationOK() throws Exception {
-        mockMvc.perform(get("/myBalance").with(httpBasic("Pierrot","Pierrot123")))
+
+        mockMvc.perform(get("/myBalance").with(httpBasic(usernameFromDB,pwdFromDB)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Here are the balance details from the DB"))
                 .andDo(print());
@@ -45,13 +51,13 @@ class BalanceControllerTest {
 
     @Test
     void getBalanceDetailsWithMockUserOK() throws Exception {
-        mockMvc.perform(get("/myBalance").with(user("MockUser")))
+        mockMvc.perform(get("/myBalance").with(user("Pierrot MockUser1")))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Here are the balance details from the DB"))
                 .andDo(print());
     }
 
-    @WithMockUser(username = "MockUser")
+    @WithMockUser(username = "Pierrot MockUser2")
     @Test
     void getBalanceDetailsWithMockUserInAnnotationOK() throws Exception {
         mockMvc.perform(get("/myBalance"))
@@ -71,9 +77,10 @@ class BalanceControllerTest {
 
     @Test
     void getBalanceDetailsWithFormloginOK() throws Exception {
-        FormLoginRequestBuilder formLoginRequestBuilder = formLogin().user("Pierrot").password("Pierrot123");
+        FormLoginRequestBuilder formLoginRequestBuilder = formLogin().user(usernameFromDB).password(pwdFromDB);
         mockMvc.perform(formLoginRequestBuilder)
                 .andExpect(authenticated())
+                .andExpect(status().is3xxRedirection())
                 .andDo(print());
     }
 }
