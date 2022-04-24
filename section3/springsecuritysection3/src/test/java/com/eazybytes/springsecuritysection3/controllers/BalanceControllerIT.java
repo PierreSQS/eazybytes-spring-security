@@ -30,8 +30,8 @@ class BalanceControllerIT {
 
     @BeforeEach
     void setUp() {
-        usernameFromDB = "happy";
-        pwdFromDB = "12345";
+        usernameFromDB = "johndoe@example.com";
+        pwdFromDB = "54321";
     }
 
     @Test
@@ -76,7 +76,7 @@ class BalanceControllerIT {
                 .andDo(print());
     }
 
-    @WithUserDetails("happy")
+    @WithUserDetails("johndoe@example.com")
     @Test
     void getBalanceDetailsWithUserDetailsAnnotatedOK() throws Exception {
         mockMvc.perform(get("/myBalance"))
