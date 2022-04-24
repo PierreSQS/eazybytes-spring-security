@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.FormLoginRequestBuilder;
@@ -69,6 +70,15 @@ class BalanceControllerIT {
     @WithMockUser
     @Test
     void getBalanceDetailsWithMockUserDefaultOK() throws Exception {
+        mockMvc.perform(get("/myBalance"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Here are the balance details from the DB"))
+                .andDo(print());
+    }
+
+    @WithUserDetails("happy")
+    @Test
+    void getBalanceDetailsWithUserDetailsAnnotatedOK() throws Exception {
         mockMvc.perform(get("/myBalance"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Here are the balance details from the DB"))
