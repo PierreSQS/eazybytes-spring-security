@@ -28,16 +28,20 @@ public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
 			config.setAllowCredentials(true);
 			config.setAllowedHeaders(Collections.singletonList("*"));
 			config.setMaxAge(3600L);
-			return config;
-		}).and().csrf().ignoringAntMatchers("/contact").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-				.and().authorizeRequests()
-				.antMatchers("/myAccount").hasRole("USER")
-				.antMatchers("/myBalance").hasAnyRole("USER","ADMIN")
-				.antMatchers("/myLoans").hasRole("ROOT")
-				.antMatchers("/myCards").authenticated()
-				.antMatchers("/user").authenticated()
-				.antMatchers("/notices").permitAll()
-				.antMatchers("/contact").permitAll().and().httpBasic();
+			return config;})
+		.and()
+			.csrf().ignoringAntMatchers("/contact").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+		.and()
+			.authorizeRequests()
+			.antMatchers("/myAccount").hasRole("USER")
+			.antMatchers("/myBalance").hasAnyRole("USER","ADMIN")
+			.antMatchers("/myLoans").hasRole("ROOT")
+			.antMatchers("/myCards").authenticated()
+			.antMatchers("/user").authenticated()
+			.antMatchers("/notices").permitAll()
+			.antMatchers("/contact").permitAll()
+		.and()
+			.httpBasic();
 	}
 	
 	@Bean
