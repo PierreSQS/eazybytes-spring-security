@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,29 +32,39 @@ class BalanceControllerIT {
     @Autowired
     ObjectMapper objectMapper;
 
-    private String username;
-    private String pwd;
     private Customer customer;
 
     @BeforeEach
     void setUp() {
-        username = "happy@example.com";
-        pwd = "12345";
-
         customer = new Customer();
         customer.setId(1);
         customer.setEmail("happy@example.com");
     }
 
     @Test
-    void getBalanceDetails() throws Exception {
+    void getBalanceDetailsWithUserPostProcessorOK() throws Exception {
+        String username = "mockuser@example.com"; // Mock User
+        String pwd = "123456"; // thus, any password will match!!!
         mockMvc.perform(post("/myBalance")
-                            .with(csrf())
-                            .with(user(username).password(pwd))
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(customer)))
+                        .with(csrf())
+                        .with(user(username).password(pwd))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customer)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(equalTo(6)))
+                .andDo(print());
+    }
+
+    // Correct in the context, because the user has the role admin not ROLE_USER
+    // thus isForbidden (compare to test above)
+    @WithUserDetails("happy@example.com")
+    @Test
+    void getBalanceDetailsWithUserDetailsAnnotatedOK() throws Exception {
+        mockMvc.perform(post("/myBalance")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customer)))
+                .andExpect(status().isForbidden())
                 .andDo(print());
     }
 }
