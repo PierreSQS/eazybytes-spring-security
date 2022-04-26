@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -67,4 +68,19 @@ class BalanceControllerIT {
                 .andExpect(status().isForbidden())
                 .andDo(print());
     }
+
+    @Test
+    void getBalanceDetailsWithHttpBasicAuthenticationOK() throws Exception {
+        String username = "happy@example.com"; // The Real User
+        String pwd = "12345"; // The correct one
+        mockMvc.perform(post("/myBalance")
+                        .with(csrf())
+                        .with(httpBasic(username,pwd))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customer)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(equalTo(6)))
+                .andDo(print());
+    }
+
 }
