@@ -5,6 +5,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.security.WeakKeyException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -50,22 +51,27 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                 // Write validated Credential in the Security Context
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (WeakKeyException e) {
-                e.printStackTrace();
+                throw new BadCredentialsException("Weak key by signing the JWT-Token!!");
             } catch (ExpiredJwtException e) {
-                e.printStackTrace();
+                throw new BadCredentialsException("JWT-Token expired!!");
             } catch (UnsupportedJwtException e) {
-                e.printStackTrace();
+                throw new BadCredentialsException("JWT-Token unsupported!!");
             } catch (MalformedJwtException e) {
-                e.printStackTrace();
+                throw new BadCredentialsException("Malformed JWT-Token");
             } catch (SignatureException e) {
-                e.printStackTrace();
+                throw new BadCredentialsException("Something went wrong by signing the JWT-Token!!");
             } catch (IllegalArgumentException e) {
-                e.printStackTrace();
+                throw new BadCredentialsException("Something went wrong by generating the JWT-Token!!");
             }
         }
 
         // continue with the filter Chain
         filterChain.doFilter(request,response);
 
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getServletPath().equals("/user");
     }
 }
