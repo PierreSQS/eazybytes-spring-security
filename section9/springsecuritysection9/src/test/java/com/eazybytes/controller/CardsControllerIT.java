@@ -14,8 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -44,15 +43,20 @@ class CardsControllerIT {
     }
 
     @Test
-    @WithUserDetails("happy@example.com")
     void getCardDetailsWithGoodUser() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/user")).andExpect(status().isOk()).andReturn();
+        String username = "happy@example.com";
+        String password = "12345";
+        MvcResult mvcResult = mockMvc.perform(get("/user").with(httpBasic(username,password)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String loggedCustomer = mvcResult.getResponse().getContentAsString();
 
         System.out.println("########### :"+mvcResult.getResponse().getHeader("Authorization"));
 
         mockMvc.perform(post("/myCards")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(customerMock)))
+                        .content(loggedCustomer))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[1].cardNumber").value(equalTo("3455XXXX8673")))
                 .andExpect(jsonPath("$.length()").value(3))
@@ -65,7 +69,7 @@ class CardsControllerIT {
         String username = "pierrot@example.com";
         String password = "12345";
 
-        mockMvc.perform(post("/myCards").with(csrf()).with(httpBasic(username,password))
+        mockMvc.perform(post("/myCards").with(httpBasic(username,password))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerMock)))
                 .andExpect(unauthenticated())
@@ -76,10 +80,10 @@ class CardsControllerIT {
     @WithUserDetails("happy@example.com")
     void getCardDetailsWithUserDetails() throws Exception {
 
-        mockMvc.perform(post("/myCards").with(csrf())
+        mockMvc.perform(post("/myCards")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerMock)))
-                .andExpect(status().isOk())
+                .andExpect(status().isForbidden())
                 .andDo(print());
     }
 }
