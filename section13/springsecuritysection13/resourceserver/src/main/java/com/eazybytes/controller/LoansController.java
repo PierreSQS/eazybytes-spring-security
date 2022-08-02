@@ -19,12 +19,8 @@ public class LoansController {
 	
 	@PostMapping("/myLoans")
 	public List<Loans> getLoanDetails(@RequestBody Customer customer) {
-		List<Loans> loans = loanRepository.findByEmailOrderByStartDtDesc(customer.getEmail());
-		if (loans != null ) {
-			return loans;
-		}else {
-			return null;
-		}
+		return loanRepository.findByEmailOrderByStartDtDesc(customer.getEmail());
+
 	}
 
 }

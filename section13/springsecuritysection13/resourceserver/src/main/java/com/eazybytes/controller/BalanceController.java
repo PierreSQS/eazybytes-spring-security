@@ -19,12 +19,8 @@ public class BalanceController {
 	
 	@PostMapping("/myBalance")
 	public List<AccountTransactions> getBalanceDetails(@RequestBody Customer customer) {
-		List<AccountTransactions> accountTransactions = accountTransactionsRepository.
+		return accountTransactionsRepository.
 				findByEmailOrderByTransactionDtDesc(customer.getEmail());
-		if (accountTransactions != null ) {
-			return accountTransactions;
-		}else {
-			return null;
-		}
+
 	}
 }
