@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -43,10 +43,11 @@ class CardsControllerIT {
     }
 
     @Test
+    @WithUserDetails("happy@example.com")
     void getCardDetailsWithGoodUser() throws Exception {
         String username = "happy@example.com";
         String password = "12345";
-        MvcResult mvcResult = mockMvc.perform(get("/user").with(httpBasic(username,password)))
+        MvcResult mvcResult = mockMvc.perform(get("/user"))
                 .andExpect(status().isOk())
                 .andReturn();
 
