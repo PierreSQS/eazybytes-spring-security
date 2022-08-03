@@ -1,6 +1,6 @@
 package com.eazybytes.model;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +36,7 @@ public class Cards {
 	private int availableAmount;
 
 	@Column(name = "create_dt")
-	private Date createDt;
+	private LocalDate createDt;
 
 	public int getCardId() {
 		return cardId;
@@ -94,11 +94,11 @@ public class Cards {
 		this.availableAmount = availableAmount;
 	}
 
-	public Date getCreateDt() {
+	public LocalDate getCreateDt() {
 		return createDt;
 	}
 
-	public void setCreateDt(Date createDt) {
+	public void setCreateDt(LocalDate createDt) {
 		this.createDt = createDt;
 	}
 	
