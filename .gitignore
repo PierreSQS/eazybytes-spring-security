@@ -1,1 +1,3 @@
 /section1/*.zip
+**/node_modules
+**/.angular
