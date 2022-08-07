@@ -19,7 +19,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
     keycloak.init({
       config: {
-        url: 'http://localhost:8081',
+        url: 'http://localhost:8082/auth',
         realm: 'eazybankdev',
         clientId: 'eazybank-public-client',
       },
