@@ -9,10 +9,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eazybytes</groupId>
-	<artifactId>resourceserver-section9</artifactId>
+	<artifactId>springsecsection13</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>resourceserver-section9</name>
-	<description>Demo project for Resource Server</description>
+	<name>springsecsection13</name>
+	<description>Section 13: Implementing OAUTH2 style login inside EazyBank using KeyCloak</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
