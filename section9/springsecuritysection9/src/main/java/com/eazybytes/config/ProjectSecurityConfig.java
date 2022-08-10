@@ -45,7 +45,7 @@ public class ProjectSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 					.antMatchers("/myAccount").hasRole("USER")
 					.antMatchers("/myBalance").hasAnyRole("USER","ADMIN")
-					.antMatchers("/myLoans").hasRole("ROOT")
+					.antMatchers("/myLoans").hasRole("ADMIN")
 					.antMatchers("/myCards").hasAnyRole("USER","ADMIN")
 					.antMatchers("/user").authenticated()
 					.antMatchers("/notices").permitAll()
